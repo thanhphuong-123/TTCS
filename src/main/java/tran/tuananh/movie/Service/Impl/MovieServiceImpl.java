@@ -15,12 +15,10 @@ import tran.tuananh.movie.Table.Response.GenerateResponse;
 import tran.tuananh.movie.Table.Response.Response;
 import tran.tuananh.movie.Table.Response.StatusCode;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -42,19 +40,18 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Response saveOrUpdate(MovieDTO dto) {
-        ModelMapper mapper = new ModelMapper();
-        Timestamp currentTime = new Timestamp(new Date().getTime());
+        LocalDateTime currentTime = LocalDateTime.now();
         try {
             if (dto.getId() == null) {
-                dto.setCreated_date(currentTime);
+                dto.setCreatedDate(currentTime);
             } else {
-                dto.setUpdated_date(currentTime);
+                dto.setUpdatedDate(currentTime);
             }
             Movie movie = mapper.map(dto, Movie.class);
             movieRepository.save(movie);
             return GenerateResponse.generateSuccessResponse("SUCCESS SAVE MOVIE", StatusCode.SUCCESS, movie);
         } catch (Exception e) {
-            logger.error(e.getStackTrace());
+            logger.error(e);
             return GenerateResponse.generateErrorResponse(e.getLocalizedMessage(), StatusCode.ERROR);
         }
     }
@@ -88,8 +85,9 @@ public class MovieServiceImpl implements MovieService {
             Optional<Movie> optionalMovie = movieRepository.findById(dto.getId());
             if (optionalMovie.isPresent()) {
                 Movie movie = optionalMovie.get();
-                movie.setIs_active(false);
-                movie.setIs_delete(true);
+                movie.setIsActive(false);
+                movie.setIsDelete(true);
+                movieRepository.save(movie);
                 return GenerateResponse.generateSuccessResponse("SUCCESS DELETED", StatusCode.SUCCESS, movie);
             }
             return GenerateResponse.generateErrorResponse("Do not exist movie with id: ", StatusCode.ERROR);
@@ -107,12 +105,13 @@ public class MovieServiceImpl implements MovieService {
         for (Movie movie : movieList) {
             List<Genre> genreList = movie.getGenres();
             genreList.forEach(g -> {
-                if (g.getId().intValue() == genre.getId().intValue() && g.getIs_active() && !g.getIs_delete()) {
+                if (Boolean.TRUE.equals(g.getId().intValue() == genre.getId().intValue() && g.getIsActive()) &&
+                        Boolean.FALSE.equals(g.getIsDelete())) {
                     result.add(movie);
                 }
             });
         }
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             return GenerateResponse.generateSuccessResponse("NO MOVIE WITH THIS GENRE", StatusCode.SUCCESS, result);
         }
         return GenerateResponse.generateSuccessResponse("SUCCESS GET MOVIE LIST BY GENRE", StatusCode.SUCCESS, result);

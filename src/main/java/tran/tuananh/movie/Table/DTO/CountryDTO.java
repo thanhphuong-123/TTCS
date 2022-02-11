@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class GenreDTO {
+public class CountryDTO {
 
-    private Integer id;
+    private String id;
     private String name;
     private Boolean isActive;
     private Boolean isDelete;

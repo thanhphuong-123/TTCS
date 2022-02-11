@@ -4,11 +4,11 @@ import tran.tuananh.movie.Table.DTO.GenreDTO;
 import tran.tuananh.movie.Table.Response.Response;
 
 public interface GenreService {
-    public Response getAll();
+    Response getAll();
 
-    public Response saveOrUpdate(GenreDTO dto);
+    Response saveOrUpdate(GenreDTO dto);
 
-    public Response getById(GenreDTO dto);
+    Response getById(GenreDTO dto);
 
-    public Response delete(GenreDTO dto);
+    Response delete(GenreDTO dto);
 }

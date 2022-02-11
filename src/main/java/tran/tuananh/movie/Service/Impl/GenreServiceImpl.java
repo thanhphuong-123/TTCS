@@ -13,8 +13,7 @@ import tran.tuananh.movie.Table.Response.GenerateResponse;
 import tran.tuananh.movie.Table.Response.Response;
 import tran.tuananh.movie.Table.Response.StatusCode;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +26,9 @@ public class GenreServiceImpl implements GenreService {
     @Autowired
     private GenreRepository genreRepository;
 
+    @Autowired
+    private ModelMapper mapper;
+
     @Override
     public Response getAll() {
         List<Genre> genreList = genreRepository.findAll();
@@ -35,19 +37,18 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Response saveOrUpdate(GenreDTO dto) {
-        ModelMapper mapper = new ModelMapper();
-        Timestamp currentTime = new Timestamp(new Date().getTime());
+        LocalDateTime currentTime = LocalDateTime.now();
         try {
             if (dto.getId() == null) {
-                dto.setCreated_date(currentTime);
+                dto.setCreatedDate(currentTime);
             } else {
-                dto.setUpdated_date(currentTime);
+                dto.setUpdatedDate(currentTime);
             }
             Genre genre = mapper.map(dto, Genre.class);
             genreRepository.save(genre);
             return GenerateResponse.generateSuccessResponse("SUCCESS SAVE MOVIE", StatusCode.SUCCESS, genre);
         } catch (Exception e) {
-            logger.error(e.getStackTrace());
+            logger.error(e);
             return GenerateResponse.generateErrorResponse(e.getLocalizedMessage(), StatusCode.ERROR);
         }
     }
@@ -81,8 +82,9 @@ public class GenreServiceImpl implements GenreService {
             Optional<Genre> optionalGenre = genreRepository.findById(dto.getId());
             if (optionalGenre.isPresent()) {
                 Genre genre = optionalGenre.get();
-                genre.setIs_active(false);
-                genre.setIs_delete(true);
+                genre.setIsActive(false);
+                genre.setIsDelete(true);
+                genreRepository.save(genre);
                 return GenerateResponse.generateSuccessResponse("SUCCESS DELETED", StatusCode.SUCCESS, genre);
             }
             return GenerateResponse.generateErrorResponse("Do not exist genre with id: ", StatusCode.ERROR);

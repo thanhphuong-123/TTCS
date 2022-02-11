@@ -16,27 +16,27 @@ public class MovieController {
     private MovieService movieService;
 
     @GetMapping(value = "/get-all")
-    private Response getAll() {
+    public Response getAll() {
         return movieService.getAll();
     }
 
-    @PostMapping(value = "/admin/save")
-    private Response saveOrUpdate(@RequestBody MovieDTO dto) {
+    @PostMapping(value = "/save")
+    public Response saveOrUpdate(@RequestBody MovieDTO dto) {
         return movieService.saveOrUpdate(dto);
     }
 
     @PostMapping(value = "/get-by-id")
-    private Response getById(@RequestBody MovieDTO dto) {
+    public Response getById(@RequestBody MovieDTO dto) {
         return movieService.getById(dto);
     }
 
-    @PostMapping(value = "/admin/delete")
-    private Response delete(@RequestBody MovieDTO dto) {
+    @PostMapping(value = "/delete")
+    public Response delete(@RequestBody MovieDTO dto) {
         return movieService.delete(dto);
     }
 
     @PostMapping(value = "/get-by-genre")
-    private Response getByGenre(@RequestBody GenreDTO dto) {
+    public Response getByGenre(@RequestBody GenreDTO dto) {
         return movieService.getMovieByGenre(dto);
     }
 

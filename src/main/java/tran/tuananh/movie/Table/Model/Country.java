@@ -1,6 +1,5 @@
 package tran.tuananh.movie.Table.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,20 +7,19 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "genre")
 @Data
+@Table(name = "country")
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Genre {
+public class Country {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id;
 
     @Column(name = "name")
     private String name;
@@ -43,8 +41,4 @@ public class Genre {
 
     @Column(name = "updated_user_id")
     private String updatedUserId;
-
-    @JsonIgnore
-    @ManyToMany(mappedBy = "genres")
-    private List<Movie> movies;
 }

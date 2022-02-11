@@ -15,22 +15,22 @@ public class GenreController {
     private GenreService genreService;
 
     @GetMapping(value = "/get-all")
-    private Response getAll() {
+    public Response getAll() {
         return genreService.getAll();
     }
 
-    @PostMapping(value = "/admin/save")
-    private Response saveOrUpdate(@RequestBody GenreDTO dto) {
+    @PostMapping(value = "/save")
+    public Response saveOrUpdate(@RequestBody GenreDTO dto) {
         return genreService.saveOrUpdate(dto);
     }
 
     @PostMapping(value = "/get-by-id")
-    private Response getById(@RequestBody GenreDTO dto) {
+    public Response getById(@RequestBody GenreDTO dto) {
         return genreService.getById(dto);
     }
 
-    @PostMapping(value = "/admin/delete")
-    private Response delete(@RequestBody GenreDTO dto) {
+    @PostMapping(value = "/delete")
+    public Response delete(@RequestBody GenreDTO dto) {
         return genreService.delete(dto);
     }
 
