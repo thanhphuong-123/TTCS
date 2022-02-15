@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "movie.tokenSecret",
+      "type": "java.lang.String",
+      "description": "Description for movie.tokenSecret."
+    },
+    {
+      "name": "movie.tokenExpirationTime",
+      "type": "java.lang.Long",
+      "description": "Description for movie.tokenExpirationTime."
+    },
+    {
+      "name": "movie.refreshTokenExpirationTime",
+      "type": "java.lang.Long",
+      "description": "Description for movie.refreshTokenExpirationTime."
+    }
+  ]
+}
