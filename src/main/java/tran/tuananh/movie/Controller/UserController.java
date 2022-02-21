@@ -54,4 +54,14 @@ public class UserController {
         return userService.refreshToken(refreshToken);
     }
 
+    @GetMapping("/exist-username/{username}")
+    public Response existsByUsername(@PathVariable(value = "username") String username) {
+        return userService.existsByUsername(username);
+    }
+
+    @GetMapping("/exist-email/{email}")
+    public Response existsByEmail(@PathVariable(value = "email") String email) {
+        return userService.existsByEmail(email);
+    }
+
 }

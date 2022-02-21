@@ -18,7 +18,6 @@ public class SignInResponse {
     private String accessToken;
     private String refreshToken;
     private String type = "Bearer";
-    @JsonIgnore
     private User user;
     private LocalDateTime expiredAt;
 

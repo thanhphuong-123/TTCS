@@ -21,7 +21,6 @@ import tran.tuananh.movie.Repository.RoleRepository;
 import tran.tuananh.movie.Repository.UserRepository;
 import tran.tuananh.movie.Service.OAuthService;
 import tran.tuananh.movie.Table.DTO.OAuthTokenDTO;
-import tran.tuananh.movie.Table.DTO.UserDTO;
 import tran.tuananh.movie.Table.Model.Role;
 import tran.tuananh.movie.Table.Response.GenerateResponse;
 import tran.tuananh.movie.Table.Response.Response;

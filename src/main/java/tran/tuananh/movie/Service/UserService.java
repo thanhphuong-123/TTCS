@@ -17,4 +17,8 @@ public interface UserService {
     Response getById(UserDTO dto);
 
     Response delete(UserDTO dto);
+
+    Response existsByUsername(String username);
+
+    Response existsByEmail(String email);
 }
