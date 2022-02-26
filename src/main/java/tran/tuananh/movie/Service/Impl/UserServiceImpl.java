@@ -149,4 +149,38 @@ public class UserServiceImpl implements UserService {
     public Response delete(UserDTO dto) {
         return null;
     }
+
+    @Override
+    public Response existsByUsername(String username) {
+        try {
+            boolean isExisted = userRepository.existsByUsername(username);
+            if (isExisted) {
+                return GenerateResponse.generateSuccessResponse("Username is already taken", StatusCode.SUCCESS,
+                        true);
+            } else {
+                return GenerateResponse.generateSuccessResponse("Username is available", StatusCode.SUCCESS,
+                        false);
+            }
+        } catch (Exception e) {
+            logger.error(e);
+            return GenerateResponse.generateErrorResponse("ERROR", StatusCode.ERROR);
+        }
+    }
+
+    @Override
+    public Response existsByEmail(String email) {
+        try {
+            boolean isExisted = userRepository.existsByEmail(email);
+            if (isExisted) {
+                return GenerateResponse.generateSuccessResponse("Email is already taken", StatusCode.SUCCESS,
+                        true);
+            } else {
+                return GenerateResponse.generateSuccessResponse("Email is available", StatusCode.SUCCESS,
+                        false);
+            }
+        } catch (Exception e) {
+            logger.error(e);
+            return GenerateResponse.generateErrorResponse("ERROR", StatusCode.ERROR);
+        }
+    }
 }

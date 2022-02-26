@@ -14,6 +14,31 @@
       "name": "movie.refreshTokenExpirationTime",
       "type": "java.lang.Long",
       "description": "Description for movie.refreshTokenExpirationTime."
+    },
+    {
+      "name": "google.client-id",
+      "type": "java.lang.String",
+      "description": "Description for google.client-id."
+    },
+    {
+      "name": "google.client-secret",
+      "type": "java.lang.String",
+      "description": "Description for google.client-secret."
+    },
+    {
+      "name": "facebook.client-id",
+      "type": "java.lang.String",
+      "description": "Description for facebook.client-id."
+    },
+    {
+      "name": "facebook.client-secret",
+      "type": "java.lang.String",
+      "description": "Description for facebook.client-secret."
+    },
+    {
+      "name": "secretPsw",
+      "type": "java.lang.String",
+      "description": "Description for secretPsw."
     }
   ]
 }
