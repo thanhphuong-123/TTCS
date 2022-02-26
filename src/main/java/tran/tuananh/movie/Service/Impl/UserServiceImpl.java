@@ -11,15 +11,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import tran.tuananh.movie.Exception.RefreshTokenException;
 import tran.tuananh.movie.Repository.RoleRepository;
 import tran.tuananh.movie.Repository.UserRepository;
+import tran.tuananh.movie.Service.EmailService;
 import tran.tuananh.movie.Service.RefreshTokenService;
 import tran.tuananh.movie.Service.UserService;
+import tran.tuananh.movie.Service.VerifyTokenService;
 import tran.tuananh.movie.Table.DTO.UserDTO;
-import tran.tuananh.movie.Table.Model.RefreshToken;
-import tran.tuananh.movie.Table.Model.Role;
-import tran.tuananh.movie.Table.Model.User;
-import tran.tuananh.movie.Table.Model.UserDetail;
+import tran.tuananh.movie.Table.Model.*;
 import tran.tuananh.movie.Table.Response.*;
 import tran.tuananh.movie.Util.JwtUtil;
 
@@ -53,6 +53,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RefreshTokenService refreshTokenService;
 
+    @Autowired
+    private VerifyTokenService verifyTokenService;
+
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public Response getAll() {
         return null;
@@ -64,11 +70,11 @@ public class UserServiceImpl implements UserService {
         try {
             if (userRepository.existsByUsername(dto.getUsername())) {
                 return GenerateResponse.generateErrorResponse("Username " + dto.getUsername() + " is already taken",
-                        StatusCode.ERROR);
+                    StatusCode.ERROR);
             }
             if (dto.getEmail() != null && userRepository.existsByEmail(dto.getEmail())) {
                 return GenerateResponse.generateErrorResponse("Email " + dto.getEmail() + " is already taken",
-                        StatusCode.ERROR);
+                    StatusCode.ERROR);
             }
 
             Set<Role> roles = new HashSet<>();
@@ -82,11 +88,14 @@ public class UserServiceImpl implements UserService {
             }
 
             User user = mapper.map(dto, User.class);
+            user.setId(UUID.randomUUID().toString());
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
             user.setRoles(roles);
             user.setCreatedDate(currentTime);
 
             userRepository.save(user);
+            VerifyToken verifyToken = verifyTokenService.createVerifyToken(user);
+            emailService.sendEmail(user.getEmail(), user.getUsername(), verifyToken.getVerifyToken());
             return GenerateResponse.generateSuccessResponse("SUCCESS SIGN UP", StatusCode.SUCCESS, user);
         } catch (Exception e) {
             logger.error(e);
@@ -98,8 +107,12 @@ public class UserServiceImpl implements UserService {
     public Response signIn(UserDTO dto) {
         SignInResponse response = new SignInResponse();
 
+        if (!userRepository.findByUsernameOrEmail(dto.getUsername()).getIsEnable()) {
+            return GenerateResponse.generateErrorResponse("VERIFY ACCOUNT TO CONTINUE", StatusCode.ERROR);
+        }
+
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
+            new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtUtil.generateToken(authentication);
@@ -108,8 +121,8 @@ public class UserServiceImpl implements UserService {
 
         Set<Role> roleList = new LinkedHashSet<>();
         List<String> roleNameList = userDetail.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList());
         for (String i : roleNameList) {
             roleList.add(roleRepository.findByName(i));
         }
@@ -131,13 +144,13 @@ public class UserServiceImpl implements UserService {
         String requestRefreshToken = refreshToken.getToken();
         RefreshTokenResponse response = new RefreshTokenResponse();
         return refreshTokenService.findByToken(requestRefreshToken).map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::getUser).map(user -> {
-                    String token = jwtUtil.generateTokenFromUserName(user.getUsername());
-                    response.setAccessToken(token);
-                    response.setRefreshToken(requestRefreshToken);
-                    return GenerateResponse.generateSuccessResponse("SUCCESS GENERATE REFRESH TOKEN",
-                            StatusCode.SUCCESS, response);
-                }).orElse(GenerateResponse.generateErrorResponse("Refresh token is not in database", StatusCode.ERROR));
+            .map(RefreshToken::getUser).map(user -> {
+                String token = jwtUtil.generateTokenFromUserName(user.getUsername());
+                response.setAccessToken(token);
+                response.setRefreshToken(requestRefreshToken);
+                return GenerateResponse.generateSuccessResponse("SUCCESS GENERATE REFRESH TOKEN",
+                    StatusCode.SUCCESS, response);
+            }).orElseThrow(RefreshTokenException::new);
     }
 
     @Override
@@ -156,10 +169,10 @@ public class UserServiceImpl implements UserService {
             boolean isExisted = userRepository.existsByUsername(username);
             if (isExisted) {
                 return GenerateResponse.generateSuccessResponse("Username is already taken", StatusCode.SUCCESS,
-                        true);
+                    true);
             } else {
                 return GenerateResponse.generateSuccessResponse("Username is available", StatusCode.SUCCESS,
-                        false);
+                    false);
             }
         } catch (Exception e) {
             logger.error(e);
@@ -173,10 +186,10 @@ public class UserServiceImpl implements UserService {
             boolean isExisted = userRepository.existsByEmail(email);
             if (isExisted) {
                 return GenerateResponse.generateSuccessResponse("Email is already taken", StatusCode.SUCCESS,
-                        true);
+                    true);
             } else {
                 return GenerateResponse.generateSuccessResponse("Email is available", StatusCode.SUCCESS,
-                        false);
+                    false);
             }
         } catch (Exception e) {
             logger.error(e);
