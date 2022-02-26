@@ -3,6 +3,7 @@ package tran.tuananh.movie.Service.Impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import tran.tuananh.movie.Exception.RefreshTokenException;
 import tran.tuananh.movie.Repository.RefreshTokenRepository;
 import tran.tuananh.movie.Repository.UserRepository;
 import tran.tuananh.movie.Service.RefreshTokenService;
@@ -28,7 +29,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     private UserRepository userRepository;
 
     @Override
-    public RefreshToken createRefreshToken(Integer userId) {
+    public RefreshToken createRefreshToken(String userId) {
         RefreshToken refreshToken = new RefreshToken();
         Optional<User> optionalUser = userRepository.findById(userId);
         optionalUser.ifPresent(refreshToken::setUser);
@@ -41,8 +42,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public RefreshToken verifyExpiration(RefreshToken token) {
-        if (token.getExpiredDate().isAfter(LocalDateTime.now())) {
+        if (token.getExpiredDate().isBefore(LocalDateTime.now())) {
             refreshTokenRepository.delete(token);
+            throw new RefreshTokenException();
         }
         return token;
     }

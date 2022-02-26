@@ -11,7 +11,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = false)
 public class UserDTO {
 
-    private Integer id;
+    private String id;
     private String firstName;
     private String lastName;
     private String username;
@@ -24,5 +24,7 @@ public class UserDTO {
     private Boolean isDelete;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
+    private String verifyToken;
+    private Boolean isEnable;
     private Set<Role> roles;
 }

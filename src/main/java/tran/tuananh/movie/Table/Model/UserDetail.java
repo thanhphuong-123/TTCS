@@ -20,7 +20,7 @@ public class UserDetail implements UserDetails {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer id;
+    private String id;
 
     private String username;
 
