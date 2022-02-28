@@ -19,7 +19,7 @@ import java.util.UUID;
 @Repository
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    @Value("${movie.refreshTokenExpirationTime}")
+    @Value(value = "${movie.refreshTokenExpirationTime}")
     private long refreshTokenExpirationTime;
 
     @Autowired

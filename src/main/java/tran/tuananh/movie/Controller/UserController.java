@@ -1,11 +1,14 @@
 package tran.tuananh.movie.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import tran.tuananh.movie.Repository.UserRepository;
 import tran.tuananh.movie.Service.UserService;
 import tran.tuananh.movie.Table.DTO.UserDTO;
 import tran.tuananh.movie.Table.Model.RefreshToken;
+import tran.tuananh.movie.Table.Model.User;
 import tran.tuananh.movie.Table.Response.Response;
 
 @RestController

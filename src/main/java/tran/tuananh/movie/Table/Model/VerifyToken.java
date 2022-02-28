@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 public class VerifyToken {
 
+    @JsonIgnore
     @Id
     @Column(name = "verify_token")
     private String verifyToken;

@@ -28,7 +28,12 @@ public class VerifyTokenServiceImpl implements VerifyTokenService {
     @Override
     public VerifyToken createVerifyToken(User user) {
         Random random = new Random();
-        VerifyToken verifyToken =
+        VerifyToken verifyToken;
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            verifyToken = verifyTokenRepository.findByUserId(user.getId());
+            verifyTokenRepository.delete(verifyToken);
+        }
+        verifyToken =
             new VerifyToken(String.valueOf(100000 + random.nextInt(900000)), LocalDateTime.now().plusMinutes(5), user);
         verifyTokenRepository.save(verifyToken);
         return verifyToken;
@@ -48,7 +53,8 @@ public class VerifyTokenServiceImpl implements VerifyTokenService {
                 User user = optionalUser.get();
                 user.setIsEnable(true);
                 userRepository.save(user);
-                return GenerateResponse.generateSuccessResponse("VERIFY ACCOUNT SUCCESSFULLY", StatusCode.SUCCESS, user);
+                return GenerateResponse.generateSuccessResponse("VERIFY ACCOUNT SUCCESSFULLY", StatusCode.SUCCESS,
+                    user);
             } else {
                 return GenerateResponse.generateErrorResponse("CANNOT FIND USER WITH ID: " + dto.getId(),
                     StatusCode.ERROR);
