@@ -49,6 +49,21 @@
       "name": "kafka.bootstrap-server",
       "type": "java.lang.String",
       "description": "Description for kafka.bootstrap-server."
+    },
+    {
+      "name": "account.sid",
+      "type": "java.lang.String",
+      "description": "Description for account.sid."
+    },
+    {
+      "name": "auth.token",
+      "type": "java.lang.String",
+      "description": "Description for auth.token."
+    },
+    {
+      "name": "phone.number",
+      "type": "java.lang.String",
+      "description": "Description for phone.number."
     }
   ]
 }

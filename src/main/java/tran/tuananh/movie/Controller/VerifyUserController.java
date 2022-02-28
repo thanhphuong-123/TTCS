@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 import tran.tuananh.movie.Repository.UserRepository;
+import tran.tuananh.movie.Service.EmailService;
 import tran.tuananh.movie.Service.VerifyTokenService;
 import tran.tuananh.movie.Table.DTO.UserDTO;
 import tran.tuananh.movie.Table.Model.User;
@@ -24,6 +25,9 @@ public class VerifyUserController {
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
+
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping
     public Response verify(@RequestBody UserDTO dto) {

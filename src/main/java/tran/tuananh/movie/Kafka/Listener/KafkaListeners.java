@@ -24,7 +24,7 @@ public class KafkaListeners {
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
 
-    @KafkaListener(topics = "movie.verify_user", containerFactory = "verifyResponseContainerFactory")
+//    @KafkaListener(topics = "movie.verify_user", containerFactory = "verifyResponseContainerFactory")
     public void verifyUser(@Payload List<VerifyResponse> list, Acknowledgment ack) {
         try {
             for (VerifyResponse record : list) {
