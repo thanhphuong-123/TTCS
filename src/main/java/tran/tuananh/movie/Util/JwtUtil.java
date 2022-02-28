@@ -17,13 +17,13 @@ public class JwtUtil {
 
     private final Logger logger = LogManager.getLogger(JwtUtil.class);
 
-    @Value("${movie.tokenSecret}")
+    @Value(value = "${movie.tokenSecret}")
     private String tokenSecret;
 
-    @Value("${movie.tokenExpirationTime}")
+    @Value(value = "${movie.tokenExpirationTime}")
     private long tokenExpirationTime;
 
-    @Value("${movie.refreshTokenExpirationTime}")
+    @Value(value = "${movie.refreshTokenExpirationTime}")
     private long refreshTokenExpirationTime;
 
     public String generateToken(Authentication authentication) {

@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import tran.tuananh.movie.Exception.RefreshTokenException;
 import tran.tuananh.movie.Repository.RoleRepository;
 import tran.tuananh.movie.Repository.UserRepository;
-import tran.tuananh.movie.Service.EmailService;
 import tran.tuananh.movie.Service.RefreshTokenService;
 import tran.tuananh.movie.Service.UserService;
 import tran.tuananh.movie.Service.VerifyTokenService;
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     private VerifyTokenService verifyTokenService;
 
     @Autowired
-    private EmailService emailService;
+    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
     public Response getAll() {
@@ -95,7 +95,11 @@ public class UserServiceImpl implements UserService {
 
             userRepository.save(user);
             VerifyToken verifyToken = verifyTokenService.createVerifyToken(user);
-            emailService.sendEmail(user.getEmail(), user.getUsername(), verifyToken.getVerifyToken());
+            VerifyResponse verifyResponse =
+                new VerifyResponse(user.getUsername(), user.getEmail(), verifyToken.getVerifyToken(),
+                    verifyToken.getExpiredDate());
+            kafkaTemplate.send("movie.verify_user", verifyResponse);
+//            emailService.sendEmail(user.getEmail(), user.getUsername(), verifyToken.getVerifyToken());
             return GenerateResponse.generateSuccessResponse("SUCCESS SIGN UP", StatusCode.SUCCESS, user);
         } catch (Exception e) {
             logger.error(e);
