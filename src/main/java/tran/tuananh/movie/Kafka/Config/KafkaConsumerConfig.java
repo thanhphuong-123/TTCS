@@ -43,6 +43,9 @@ public class KafkaConsumerConfig {
         Map<String, Object> props = consumerConfig();
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "verify_user-1");
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, String.valueOf(100));
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 300000);
         return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(),
             new JsonDeserializer<>(VerifyResponse.class));
     }
@@ -52,6 +55,7 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String, VerifyResponse> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(verifyResponseConsumerFactory());
+        factory.setBatchListener(true);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         return factory;
     }

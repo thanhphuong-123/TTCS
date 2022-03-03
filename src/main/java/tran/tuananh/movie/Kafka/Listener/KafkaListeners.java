@@ -1,5 +1,6 @@
 package tran.tuananh.movie.Kafka.Listener;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,15 @@ public class KafkaListeners {
     private EmailService emailService;
 
     @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private KafkaTemplate<Object, Object> kafkaTemplate;
 
-//    @KafkaListener(topics = "movie.verify_user", containerFactory = "verifyResponseContainerFactory")
-    public void verifyUser(@Payload List<VerifyResponse> list, Acknowledgment ack) {
+    @KafkaListener(topics = "movie.verify_user", containerFactory = "verifyResponseContainerFactory")
+    public void verifyUser(@Payload List<ConsumerRecord<String, VerifyResponse>> list, Acknowledgment ack) {
         try {
-            for (VerifyResponse record : list) {
-                emailService.sendEmail(record.getEmail(), record.getUsername(), record.getToken());
+            for (ConsumerRecord<String, VerifyResponse> record : list) {
+                VerifyResponse verifyResponse = record.value();
+                emailService.sendEmail(verifyResponse.getEmail(), verifyResponse.getUsername(),
+                    verifyResponse.getToken());
             }
         } catch (Exception e) {
             kafkaTemplate.send("movie.verify_user_error", e.getMessage());

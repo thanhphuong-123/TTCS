@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     private VerifyTokenService verifyTokenService;
 
     @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private KafkaTemplate<Object, Object> kafkaTemplate;
 
     @Override
     public Response getAll() {
