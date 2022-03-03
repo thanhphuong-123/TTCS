@@ -1,9 +1,12 @@
 package tran.tuananh.movie.Controller;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
+import tran.tuananh.movie.Kafka.Config.KafkaSender;
 import tran.tuananh.movie.Repository.UserRepository;
+import tran.tuananh.movie.Service.EmailService;
 import tran.tuananh.movie.Service.VerifyTokenService;
 import tran.tuananh.movie.Table.DTO.UserDTO;
 import tran.tuananh.movie.Table.Model.User;
@@ -22,8 +25,14 @@ public class VerifyUserController {
     @Autowired
     private UserRepository userRepository;
 
+//    @Autowired
+//    private KafkaTemplate<String, Object> kafkaTemplate;
+
     @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private KafkaSender kafkaSender;
+
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping
     public Response verify(@RequestBody UserDTO dto) {
@@ -37,7 +46,9 @@ public class VerifyUserController {
         VerifyResponse verifyResponse =
             new VerifyResponse(user.getUsername(), user.getEmail(), verifyToken.getVerifyToken(),
                 verifyToken.getExpiredDate());
-        kafkaTemplate.send("movie.verify_user", verifyResponse);
+        ProducerRecord<Object, Object> producerRecord =
+            new ProducerRecord<>("movie.verify_user", verifyResponse.getUsername(), verifyResponse);
+        kafkaSender.sendProducerRecord(producerRecord);
 //        emailService.sendEmail(user.getEmail(), user.getUsername(), verifyToken.getVerifyToken());
         return verifyToken;
     }

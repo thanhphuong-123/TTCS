@@ -28,10 +28,12 @@ public class VerifyTokenServiceImpl implements VerifyTokenService {
     @Override
     public VerifyToken createVerifyToken(User user) {
         Random random = new Random();
-        VerifyToken verifyToken;
+        VerifyToken verifyToken = null;
         if (userRepository.findByEmail(user.getEmail()) != null) {
             verifyToken = verifyTokenRepository.findByUserId(user.getId());
-            verifyTokenRepository.delete(verifyToken);
+            if (verifyToken != null) {
+                verifyTokenRepository.delete(verifyToken);
+            }
         }
         verifyToken =
             new VerifyToken(String.valueOf(100000 + random.nextInt(900000)), LocalDateTime.now().plusMinutes(5), user);

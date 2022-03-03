@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     private VerifyTokenService verifyTokenService;
 
     @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private KafkaTemplate<Object, Object> kafkaTemplate;
 
     @Override
     public Response getAll() {
@@ -94,11 +94,11 @@ public class UserServiceImpl implements UserService {
             user.setCreatedDate(currentTime);
 
             userRepository.save(user);
-            VerifyToken verifyToken = verifyTokenService.createVerifyToken(user);
-            VerifyResponse verifyResponse =
-                new VerifyResponse(user.getUsername(), user.getEmail(), verifyToken.getVerifyToken(),
-                    verifyToken.getExpiredDate());
-            kafkaTemplate.send("movie.verify_user", verifyResponse);
+//            VerifyToken verifyToken = verifyTokenService.createVerifyToken(user);
+//            VerifyResponse verifyResponse =
+//                new VerifyResponse(user.getUsername(), user.getEmail(), verifyToken.getVerifyToken(),
+//                    verifyToken.getExpiredDate());
+//            kafkaTemplate.send("movie.verify_user", verifyResponse);
 //            emailService.sendEmail(user.getEmail(), user.getUsername(), verifyToken.getVerifyToken());
             return GenerateResponse.generateSuccessResponse("SUCCESS SIGN UP", StatusCode.SUCCESS, user);
         } catch (Exception e) {
