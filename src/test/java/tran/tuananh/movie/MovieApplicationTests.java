@@ -3,7 +3,7 @@ package tran.tuananh.movie;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = MovieApplicationTests.class)
 class MovieApplicationTests {
 
 	@Test
