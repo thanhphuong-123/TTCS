@@ -43,24 +43,19 @@ public class VerifyTokenServiceImpl implements VerifyTokenService {
 
     @Override
     public Response verifyToken(UserDTO dto) {
-        VerifyToken verifyToken = verifyTokenRepository.findByUserId(dto.getId());
+        VerifyToken verifyToken = verifyTokenRepository.findByUserUsername(dto.getUsername());
         if (verifyToken.getExpiredDate().isBefore(LocalDateTime.now())) {
             verifyTokenRepository.delete(verifyToken);
             return GenerateResponse.generateErrorResponse("VERIFY TOKEN IS EXPIRED", StatusCode.ERROR);
         }
-        if (dto.getId().equals(verifyToken.getUser().getId()) &&
+        if (dto.getUsername().equals(verifyToken.getUser().getUsername()) &&
             verifyToken.getVerifyToken().equals(dto.getVerifyToken())) {
-            Optional<User> optionalUser = userRepository.findById(dto.getId());
-            if (optionalUser.isPresent()) {
-                User user = optionalUser.get();
-                user.setIsEnable(true);
-                userRepository.save(user);
-                return GenerateResponse.generateSuccessResponse("VERIFY ACCOUNT SUCCESSFULLY", StatusCode.SUCCESS,
-                    user);
-            } else {
-                return GenerateResponse.generateErrorResponse("CANNOT FIND USER WITH ID: " + dto.getId(),
-                    StatusCode.ERROR);
-            }
+            User user = userRepository.findByUsername(dto.getUsername());
+            user.setIsEnable(true);
+            userRepository.save(user);
+            verifyTokenRepository.delete(verifyToken);
+            return GenerateResponse.generateSuccessResponse("VERIFY ACCOUNT SUCCESSFULLY", StatusCode.SUCCESS,
+                user);
         }
         return GenerateResponse.generateErrorResponse("INVALID VERIFY TOKEN", StatusCode.ERROR);
     }

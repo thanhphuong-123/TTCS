@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import phuongnguyen.movie.Repository.GenreRepository;
 import phuongnguyen.movie.Repository.MovieRepository;
 import phuongnguyen.movie.Table.DTO.GenreDTO;
 import phuongnguyen.movie.Table.DTO.MovieDTO;
@@ -30,6 +31,9 @@ public class MovieServiceImpl implements MovieService {
     private MovieRepository movieRepository;
 
     @Autowired
+    private GenreRepository genreRepository;
+
+    @Autowired
     private ModelMapper mapper;
 
     @Override
@@ -40,6 +44,14 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Response saveOrUpdate(MovieDTO dto) {
+        List<Genre> genres = new ArrayList<>();
+        if (dto.getGenreId() != null) {
+            for (Integer genreId : dto.getGenreId()) {
+                Optional<Genre> optionalGenre = genreRepository.findById(genreId);
+                optionalGenre.ifPresent(genres::add);
+            }
+        }
+        dto.setGenres(genres);
         LocalDateTime currentTime = LocalDateTime.now();
         try {
             if (dto.getId() == null) {
@@ -61,7 +73,7 @@ public class MovieServiceImpl implements MovieService {
         try {
             if (dto.getId() == null) {
                 return GenerateResponse.generateErrorResponse("Do not exist movie with id: " + dto.getId(),
-                        StatusCode.ERROR);
+                    StatusCode.ERROR);
             }
             Optional<Movie> optionalMovie = movieRepository.findById(dto.getId());
             if (optionalMovie.isPresent()) {
@@ -80,7 +92,7 @@ public class MovieServiceImpl implements MovieService {
         try {
             if (dto.getId() == null) {
                 return GenerateResponse.generateErrorResponse("Do not exist movie with id: " + dto.getId(),
-                        StatusCode.ERROR);
+                    StatusCode.ERROR);
             }
             Optional<Movie> optionalMovie = movieRepository.findById(dto.getId());
             if (optionalMovie.isPresent()) {
@@ -106,7 +118,7 @@ public class MovieServiceImpl implements MovieService {
             List<Genre> genreList = movie.getGenres();
             genreList.forEach(g -> {
                 if (Boolean.TRUE.equals(g.getId().intValue() == genre.getId().intValue() && g.getIsActive()) &&
-                        Boolean.FALSE.equals(g.getIsDelete())) {
+                    Boolean.FALSE.equals(g.getIsDelete())) {
                     result.add(movie);
                 }
             });

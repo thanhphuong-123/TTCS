@@ -16,7 +16,7 @@ import java.util.List;
 public class MovieDTO {
 
     private Integer id;
-    private Integer countryId;
+    private String countryId;
     private String title;
     private String name;
     private Float rate;
@@ -34,4 +34,5 @@ public class MovieDTO {
     private String createdUserId;
     private String updatedUserId;
     private List<Genre> genres;
+    private List<Integer> genreId;
 }

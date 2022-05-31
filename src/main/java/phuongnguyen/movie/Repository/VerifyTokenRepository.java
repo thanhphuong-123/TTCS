@@ -8,4 +8,6 @@ import phuongnguyen.movie.Table.Model.VerifyToken;
 public interface VerifyTokenRepository extends JpaRepository<VerifyToken, String> {
 
     VerifyToken findByUserId(String userId);
+
+    VerifyToken findByUserUsername(String username);
 }

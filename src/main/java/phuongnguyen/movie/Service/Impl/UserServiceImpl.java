@@ -64,6 +64,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response signUp(UserDTO dto) {
+        dto.setIsActive(true);
+        dto.setIsDelete(false);
+        dto.setIsEnable(false);
         LocalDateTime currentTime = LocalDateTime.now();
         try {
             if (userRepository.existsByUsername(dto.getUsername())) {

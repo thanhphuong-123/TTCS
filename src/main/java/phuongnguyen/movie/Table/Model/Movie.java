@@ -23,7 +23,7 @@ public class Movie {
     private Integer id;
 
     @Column(name = "country_id")
-    private Integer countryId;
+    private String countryId;
 
     @Column(name = "title")
     private String title;
