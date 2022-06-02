@@ -1,6 +1,7 @@
 package phuongnguyen.movie.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import phuongnguyen.movie.Table.DTO.GenreDTO;
 import phuongnguyen.movie.Table.DTO.MovieDTO;
@@ -38,6 +39,11 @@ public class MovieController {
     @PostMapping(value = "/get-by-genre")
     public Response getByGenre(@RequestBody GenreDTO dto) {
         return movieService.getMovieByGenre(dto);
+    }
+
+    @PostMapping(value = "/search")
+    public Response search(@RequestBody MovieDTO dto) {
+        return movieService.search(dto);
     }
 
 }

@@ -42,6 +42,7 @@ public class GenreServiceImpl implements GenreService {
             if (dto.getId() == null) {
                 dto.setCreatedDate(currentTime);
             } else {
+                dto.setCreatedDate(dto.getCreatedDate() != null ? dto.getCreatedDate() : currentTime);
                 dto.setUpdatedDate(currentTime);
             }
             Genre genre = mapper.map(dto, Genre.class);
@@ -81,11 +82,8 @@ public class GenreServiceImpl implements GenreService {
             }
             Optional<Genre> optionalGenre = genreRepository.findById(dto.getId());
             if (optionalGenre.isPresent()) {
-                Genre genre = optionalGenre.get();
-                genre.setIsActive(false);
-                genre.setIsDelete(true);
-                genreRepository.save(genre);
-                return GenerateResponse.generateSuccessResponse("SUCCESS DELETED", StatusCode.SUCCESS, genre);
+                genreRepository.deleteById(dto.getId());
+                return GenerateResponse.generateSuccessResponse("SUCCESS DELETED", StatusCode.SUCCESS, null);
             }
             return GenerateResponse.generateErrorResponse("Do not exist genre with id: ", StatusCode.ERROR);
         } catch (Exception e) {

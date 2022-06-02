@@ -85,11 +85,8 @@ public class CountryServiceImpl implements CountryService {
             }
             Optional<Country> optionalCountry = countryRepository.findById(dto.getId());
             if (optionalCountry.isPresent()) {
-                Country country = optionalCountry.get();
-                country.setIsActive(false);
-                country.setIsDelete(true);
-                countryRepository.save(country);
-                return GenerateResponse.generateSuccessResponse("SUCCESS DELETED", StatusCode.SUCCESS, country);
+                countryRepository.deleteById(dto.getId());
+                return GenerateResponse.generateSuccessResponse("SUCCESS DELETED", StatusCode.SUCCESS, null);
             }
             return GenerateResponse.generateErrorResponse("Do not exist country with id: ", StatusCode.ERROR);
         } catch (Exception e) {

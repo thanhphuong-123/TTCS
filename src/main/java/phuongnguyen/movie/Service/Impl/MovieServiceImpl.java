@@ -128,4 +128,11 @@ public class MovieServiceImpl implements MovieService {
         }
         return GenerateResponse.generateSuccessResponse("SUCCESS GET MOVIE LIST BY GENRE", StatusCode.SUCCESS, result);
     }
+
+    @Override
+    public Response search(MovieDTO dto) {
+        List<Movie> list =
+            movieRepository.search(dto.getGenreId(), dto.getCountryId(), dto.getRate(), dto.getReleaseDate());
+        return GenerateResponse.generateSuccessResponse("SUCCESS SEARCH MOVIE", StatusCode.SUCCESS, list);
+    }
 }
